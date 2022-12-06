@@ -1,0 +1,99 @@
+DROP SCHEMA IF EXISTS seminar5; -- с чистого листа
+CREATE SCHEMA seminar5;
+USE seminar5;
+
+CREATE TABLE  AUTO 
+(       
+	REGNUM VARCHAR(10) PRIMARY KEY, 
+	MARK VARCHAR(10), 
+	COLOR VARCHAR(15),
+	RELEASEDT DATE, 
+	PHONENUM VARCHAR(15)
+);
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111114,'LADA', 'КРАСНЫЙ', date'2008-01-01', '9152222221');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111115,'VOLVO', 'КРАСНЫЙ', date'2013-01-01', '9173333334');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111116,'BMW', 'СИНИЙ', date'2015-01-01', '9173333334');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111121,'AUDI', 'СИНИЙ', date'2009-01-01', '9173333332');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111122,'AUDI', 'СИНИЙ', date'2011-01-01', '9213333336');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111113,'BMW', 'ЗЕЛЕНЫЙ', date'2007-01-01', '9214444444');
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111126,'LADA', 'ЗЕЛЕНЫЙ', date'2005-01-01', null);
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111117,'BMW', 'СИНИЙ', date'2005-01-01', null);
+
+
+INSERT INTO AUTO (REGNUM, MARK,	COLOR, RELEASEDT, PHONENUM )
+VALUES(111119,'LADA', 'СИНИЙ', date'2017-01-01', 9213333331);
+
+SELECT * FROM AUTO;
+
+# Для выполнения дальнейших заданий создадим доп таблицу со стоимостью авто
+CREATE TABLE sales (
+	sale_id VARCHAR(10) NOT NULL,
+    sale_price DECIMAL NOT NULL,
+    FOREIGN KEY (sale_id) REFERENCES AUTO (REGNUM)
+);
+
+INSERT INTO sales VALUES
+('111113', 24000),
+('111114', 20000),
+('111115', 25000),
+('111116', 50000),
+('111117', 28000),
+('111119', 22000),
+('111121', 41500),
+('111122', 18800),
+('111126', 27500);
+
+SELECT * FROM AUTO, sales
+WHERE sale_id = REGNUM;
+
+-- Представление, в которое попадут автомобили стоимостью до 25 000 долларов
+# DROP VIEW upto_25000;
+CREATE VIEW upto_25000 AS
+SELECT
+	MARK AS 'UPTO25', COLOR, RELEASEDT
+FROM AUTO, sales
+WHERE REGNUM = sale_id AND sale_price <= 25000;
+
+SELECT * FROM upto_25000;
+
+-- Изменение в существующем представлении порога для стоимости: пусть цена будет до 30 000 долларов
+ALTER VIEW upto_25000 AS
+SELECT
+	MARK AS 'UPTO30', COLOR, RELEASEDT
+FROM AUTO, sales
+WHERE REGNUM = sale_id AND sale_price <= 30000;
+
+SELECT * FROM upto_25000;
+
+-- Представление, в котором будут только автомобили марки “Шкода” и “Ауди”
+# DROP VIEW shaudi;
+CREATE VIEW shaudi AS
+SELECT
+	MARK, COLOR, RELEASEDT
+FROM AUTO, sales
+WHERE REGNUM = sale_id AND (MARK = 'SKODA' OR MARK = 'AUDI');
+
+SELECT * FROM shaudi;
